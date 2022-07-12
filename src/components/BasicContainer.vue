@@ -1,23 +1,29 @@
 <script setup>
-import StatNumeric from "./StatNumeric.vue";
+defineProps({
+  width: {
+    default: "50rem",
+  },
+  height: {
+    default: "10rem",
+  },
+});
 </script>
 
 <template>
   <div class="numeric-long-container">
-    <StatNumeric number="5000"> Highest Damage Dealt </StatNumeric>
-    <StatNumeric number="57"> Number of Quests </StatNumeric>
-    <StatNumeric number="21"> Number of Carts </StatNumeric>
+    <slot></slot>
   </div>
 </template>
 
 <style scoped>
 .numeric-long-container {
   background-color: white;
-  width: 50rem;
-  height: 10rem;
+  width: v-bind(width);
+  height: v-bind(height);
   box-shadow: 8px 8px 24px 0px rgba(224, 228, 228, 1);
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin: 1rem;
 }
 </style>
