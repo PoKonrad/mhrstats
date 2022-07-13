@@ -1,16 +1,28 @@
 <script setup>
-defineProps({
+const props = defineProps({
   width: {
     default: "50rem",
   },
   height: {
     default: "10rem",
   },
+  margin: {
+    default: "1rem",
+  },
+  clear: {
+    default: false,
+    type: Boolean,
+  },
 });
 </script>
 
 <template>
-  <div class="numeric-long-container">
+  <div
+    class="numeric-long-container"
+    :class="{
+      clear: props.clear,
+    }"
+  >
     <slot></slot>
   </div>
 </template>
@@ -24,6 +36,11 @@ defineProps({
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 1rem;
+  margin: v-bind(margin);
+}
+
+.clear {
+  background-color: none;
+  box-shadow: none;
 }
 </style>
