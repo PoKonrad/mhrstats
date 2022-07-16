@@ -6,7 +6,13 @@ import DoughnutChart from "../components/DoughnutChart.vue";
 
 const grahpTemp = {
   1: 2,
-  3: 4,
+  2: 4,
+  3: 5,
+  4: 8,
+  5: 2,
+  6: 0,
+  7: 10,
+  8: 2,
 };
 </script>
 

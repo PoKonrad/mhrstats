@@ -14,7 +14,7 @@ const data = {
       label: props.label,
       data: props.data,
       fill: true,
-      borderColor: "rgb(75, 192, 192)",
+      borderColor: "#1AC9E6",
       tension: 0.2,
     },
   ],

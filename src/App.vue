@@ -5,11 +5,8 @@ import HomeView from "./views/HomeView.vue";
 
 <template>
   <div class="mainContainer">
-    <div class="side-panel">
-      <SidePanel />
-    </div>
     <div class="main">
-      <HomeView />
+      <RouterView />
     </div>
   </div>
 </template>
