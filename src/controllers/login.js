@@ -1,19 +1,22 @@
-import jwt from 'jsonwebtoken'
+import db from '../configs/database.js'
+import argon2 from 'argon2'
+import generateToken from '../scripts/generateToken.js'
 
-const login = (req, res) => {
+const login = async (req, res) => {
     const postData = req.body;
-    const user = {
-        'email': postData.email,
-        'name': postData.name
+    const dbResp = await db("SELECT * FROM users WHERE username = ?", [postData.username, postData.password])
+
+    if (!dbResp[0]) {
+        res.status(400).json("No such user")
+        return
     }
-    const token = jwt.sign(user, process.env.SECRET, { expiresIn: process.env.TOKEN_LIFE })
-    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_LIFE })
-    const response = {
-        "status": "Logged in",
-        "token": token,
-        "refreshToken": refreshToken
+
+    if (await argon2.verify(dbResp[0].password, postData.password)) {
+        console.log('Success!')
+        res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].id))
+    } else {
+        res.status(400).json("Wrong login stuff")
     }
-    res.status(200).json(response)
 }
 
 export default login
