@@ -9,7 +9,7 @@ class parseDamageMeterData {
                 name: el.name,
                 isQuestTarget: el.isQuestTarget,
                 isHunted: el.hp.current ? false : true,
-                damageData: el.damageSources ? this.getDamageData(el) : null
+                damageData: el.damageSources ? this.getDamageData(el) : {}
             }
         })
     }
@@ -30,11 +30,12 @@ class parseDamageMeterData {
     }
 
     getDamageData(monster) {
-        return monster.damageSources.flatMap(el => {
+        const temp = {}
+        monster.damageSources.flatMap(el => {
             if (!el.counters.PlayerWeapon.physical) {
                 return []
             }
-            return {
+            temp[el.id] = {
                 id: el.id,
                 physical: el.counters.PlayerWeapon.physical,
                 elemental: el.counters.PlayerWeapon.elemental,
@@ -43,6 +44,7 @@ class parseDamageMeterData {
                 numHit: el.counters.PlayerWeapon.numHit
             }
         })
+        return temp
     }
 }
 
