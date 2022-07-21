@@ -12,7 +12,7 @@ const newData = async (req, res) => {
     }
 
     const insertLog = async (monsters, players) => {
-        const huntID = await insertHunt(parseInt(questSuccess))
+        const huntID = await insertHunt(questSuccess ? 1 : 0)
 
         players.forEach(async (el) => {
             const currentPlayerId = el.id
@@ -21,8 +21,16 @@ const newData = async (req, res) => {
                 const object = el.damageData[currentPlayerId]
                 damageSum += object ? Object.values(object).reduce((a, b) => a + b) : 0
             })
-            const playerId = await dbQuery(`
-            INSERT INTO hunts_players (hunt_id, damage, carts, player) VALUES (?, ?, ?, ?);`, [huntID[0].id, damageSum, el.carts, el.name])
+            const name = el.name
+            console.log(name)
+            let playerId = await dbQuery(`SELECT id FROM players WHERE name = ?`, [name])
+
+            if (!playerId[0]?.id) {
+                // Insert player if doesn't exist
+                playerId = await dbQuery(`INSERT INTO players (name) VALUES (?) RETURNING id`, [name])
+            }
+            await dbQuery(`
+            INSERT INTO hunts_players (hunt_id, damage, carts, player) VALUES (?, ?, ?, ?);`, [huntID[0].id, damageSum, el.carts, playerId[0].id])
             console.log(playerId)
         })
 
@@ -31,6 +39,7 @@ const newData = async (req, res) => {
         });
     }
     insertLog(monsters, players)
+    res.status(200).json('Success')
 }
 
 export default newData
