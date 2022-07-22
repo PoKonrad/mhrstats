@@ -3,6 +3,8 @@ import BasicContainer from "../components/BasicContainer.vue";
 import GrahpCard from "../components/GrahpCard.vue";
 import StatBox from "../components/StatBox.vue";
 import DoughnutChart from "../components/DoughnutChart.vue";
+import RecentHunts from "../components/RecentHunts.vue";
+import BasicButton from "../components/BasicButton.vue";
 
 const grahpTemp = {
   1: 2,
@@ -32,10 +34,12 @@ const grahpTemp = {
         Dealt by Rad
       </StatBox>
     </BasicContainer>
-    <BasicContainer clear height="18rem">
-      <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
-        <GrahpCard label="Carts over Time" :data="grahpTemp" />
+    <BasicContainer width="24rem">
+      <BasicContainer width="25rem" :style="{ margin: 0 }">
+        <BasicButton @click="$router.push('/addData')">Add Data</BasicButton>
       </BasicContainer>
+    </BasicContainer>
+    <BasicContainer clear height="18rem">
       <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
         <GrahpCard label="Carts over Time" :data="grahpTemp" />
       </BasicContainer>
@@ -55,13 +59,17 @@ const grahpTemp = {
         :labels="['Completed', 'Returned', 'Failed']"
       />
     </BasicContainer>
+    <BasicContainer height="20rem" width="80rem" :style="{ display: 'block' }">
+      <RecentHunts />
+    </BasicContainer>
   </div>
 </template>
 
 <style scoped>
 .main-box {
   display: flex;
-  align-content: baseline;
+  justify-content: space-evenly;
+  align-items: center;
   flex-wrap: wrap;
   box-sizing: border-box;
 }
