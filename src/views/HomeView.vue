@@ -22,7 +22,7 @@ const getFaintStats = async (player) => {
 
 onMounted(async () => {
   const mostHuntedResp = await mostHunted();
-  faintJson.value = await getFaintStats('Rad');
+  faintJson.value = await getFaintStats("Rad");
   mostHuntedData.value = mostHuntedResp.data[0];
 });
 
@@ -34,8 +34,17 @@ const faintsStats = computed(() => {
     x: x.hunt_date.slice(0, 10),
     y: x.carts,
   }));
-})
+});
 
+const monsterImage = computed(() => {
+  if (!mostHuntedData.value) {
+    return null;
+  }
+  return new URL(
+    `../assets/monsters/${mostHuntedData.value.Monster}.png`,
+    import.meta.url
+  ).href;
+});
 </script>
 
 <template>
@@ -75,7 +84,7 @@ const faintsStats = computed(() => {
         <StatBox
           :text="mostHuntedData.Monster"
           top-text="Most Hunted Monster"
-          :image="`https://monsterhunter.fandom.com/wiki/Mizutsune?file=MHRise-Mizutsune_Icon.png`"
+          :image="monsterImage"
         >
           Hunted {{ mostHuntedData.Count }} times
         </StatBox>
