@@ -5,7 +5,7 @@ import { onMounted, ref } from "vue";
 import fitToContainer from "./scripts/fitToContainer";
 Chart.register(...registerables);
 
-const props = defineProps(["label", "data", "data2"]);
+const props = defineProps(["label", "label2", "data", "data2", "text"]);
 
 const canvas = ref(null);
 
@@ -21,7 +21,7 @@ const data = computed(() => {
         yAxisID: "y",
       },
       {
-        label: props.label,
+        label: props.label2,
         data: props.data2,
         fill: true,
         borderColor: "#6c7ae0",
@@ -46,7 +46,7 @@ const config = computed(() => {
       plugins: {
         title: {
           display: true,
-          text: "Chart.js Line Chart - Multi Axis",
+          text: props.text,
         },
       },
       scales: {
@@ -72,7 +72,7 @@ const config = computed(() => {
 onMounted(() => {
   fitToContainer(canvas.value);
   const ctx = canvas.value.getContext("2d");
-  const chart = new Chart(ctx, config.value);
+  new Chart(ctx, config.value);
   console.log(config.value);
 });
 </script>

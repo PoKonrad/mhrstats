@@ -13,16 +13,16 @@ const mostHuntedData = ref("");
 const faintJson = ref();
 
 const mostHunted = async () => {
-  return await api.get("/api/data/stats?type=mostHunted");
+  return await api.get("/api/data/mostHunted");
 };
 
-const getFaintStats = async () => {
-  return await api.get("/api/data/stats?type=faintsOverTime&name=Rad");
+const getFaintStats = async (player) => {
+  return await api.get(`/api/data/cartsOverTime/${player}`);
 };
 
 onMounted(async () => {
   const mostHuntedResp = await mostHunted();
-  faintJson.value = await getFaintStats();
+  faintJson.value = await getFaintStats('Rad');
   mostHuntedData.value = mostHuntedResp.data[0];
 });
 
@@ -34,7 +34,8 @@ const faintsStats = computed(() => {
     x: x.hunt_date.slice(0, 10),
     y: x.carts,
   }));
-});
+})
+
 </script>
 
 <template>
@@ -62,8 +63,10 @@ const faintsStats = computed(() => {
       <BasicContainer clear height="18rem">
         <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
           <GrahpCard
+            text="Faints over time"
             v-if="faintsStats"
-            label="Carts over Time"
+            label="Player1"
+            label2="Player2"
             :data="faintsStats"
           />
         </BasicContainer>

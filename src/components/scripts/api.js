@@ -47,7 +47,7 @@ class api {
     } catch (err) {
       if (err.status === 401 && !afterRefresh && auth) {
         await this.refToken();
-        return await this._fetch(method, url, body, true);
+        return await this._fetch(method, url, true, body, true);
       }
 
       throw err;
