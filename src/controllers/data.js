@@ -69,6 +69,12 @@ router.get('/cartsOverTime/:name', async (req, res) => {
     res.status(200).json({ data: resp })
 })
 
+router.get('/highestDamageDone', async (req, res) => {
+    const resp = removeBigInt(await dbQuery('SELECT players.name, MAX(hunts_players.damage) FROM players JOIN hunts_players ON players.id = hunts_players.player'))
+
+    res.status(200).json({ data: resp })
+})
+
 router.post('/addData', async (req, res) => {
     const data = new damageMeterParser(req.body)
     const players = data.getPlayers()
