@@ -35,7 +35,7 @@ class api {
                 "Content-Type": "application/json",
               }
         ),
-        body: body ? JSON.stringify(body) : null,
+        body: body ? JSON.stringify(body) : undefined,
       }).then((resp) => {
         if (resp.ok) {
           return resp.json();
@@ -46,7 +46,6 @@ class api {
       return data;
     } catch (err) {
       if (err.status === 401 && !afterRefresh && auth) {
-        console.log("owo");
         await this.refToken();
         return await this._fetch(method, url, body, true);
       }
@@ -56,15 +55,9 @@ class api {
   }
 
   async refToken() {
-    console.log("uwu");
-    const resp = await this._fetch(
-      "POST",
-      "http://localhost:8000/auth/refreshToken",
-      false,
-      {
-        refreshToken: this.refreshToken,
-      }
-    );
+    const resp = await this._fetch("POST", "/api/auth/refreshToken", false, {
+      refreshToken: this.refreshToken,
+    });
     this.refreshToken = resp.refreshToken;
     this.token = resp.token;
   }

@@ -5,64 +5,91 @@ import StatBox from "../components/StatBox.vue";
 import DoughnutChart from "../components/DoughnutChart.vue";
 import RecentHunts from "../components/RecentHunts.vue";
 import BasicButton from "../components/BasicButton.vue";
+import api from "../components/scripts/api";
+import { onMounted, ref, watch, watchEffect } from "vue";
+import { computed } from "vue";
 
-const grahpTemp = {
-  1: 2,
-  2: 4,
-  3: 5,
-  4: 8,
-  5: 2,
-  6: 0,
-  7: 10,
-  8: 2,
+const mostHuntedData = ref("a");
+const faintsStats = ref([]);
+
+const mostHunted = async () => {
+  return await api.get("/api/data/stats?type=mostHunted");
 };
+
+const getFaintStats = async () => {
+  return await api.get("/api/data/stats?type=faintsOverTime&name=Rad");
+};
+
+onMounted(async () => {
+  const mostHuntedResp = await mostHunted();
+  const getFaintsStatsResp = await getFaintStats();
+  mostHuntedData.value = mostHuntedResp.data[0];
+  console.log(getFaintsStatsResp.data);
+
+  const faintsStatsTemp = {};
+  getFaintsStatsResp.data.forEach((el) => {
+    faintsStatsTemp[el.hunt_date.slice(0, 10)] = parseInt(el.carts);
+  });
+  faintsStats.value = faintsStatsTemp;
+  console.log(faintsStatsTemp);
+});
 </script>
 
 <template>
-  <div class="main-box">
-    <BasicContainer>
-      <StatBox text="5000"> Highest Damage Dealt </StatBox>
-      <StatBox text="57"> Number of Quests </StatBox>
-      <StatBox text="21"> Number of Carts </StatBox>
-    </BasicContainer>
-    <BasicContainer width="24rem">
-      <StatBox
-        text="51251"
-        top-text="Highest Hit"
-        image="https://static.wikia.nocookie.net/fanonmonsterhunter/images/c/c2/Great_Sword_Icon_White.png"
-      >
-        Dealt by Rad
-      </StatBox>
-    </BasicContainer>
-    <BasicContainer width="24rem">
-      <BasicContainer width="25rem" :style="{ margin: 0 }">
-        <BasicButton @click="$router.push('/addData')">Add Data</BasicButton>
+  <Suspense>
+    <div class="main-box">
+      <BasicContainer>
+        <StatBox text="5000"> Highest Damage Dealt </StatBox>
+        <StatBox text="57"> Number of Quests </StatBox>
+        <StatBox text="21"> Number of Carts </StatBox>
       </BasicContainer>
-    </BasicContainer>
-    <BasicContainer clear height="18rem">
-      <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
-        <GrahpCard label="Carts over Time" :data="grahpTemp" />
+      <BasicContainer width="24rem">
+        <StatBox
+          text="51251"
+          top-text="Highest Hit"
+          image="https://static.wikia.nocookie.net/fanonmonsterhunter/images/c/c2/Great_Sword_Icon_White.png"
+        >
+          Dealt by Rad
+        </StatBox>
       </BasicContainer>
-    </BasicContainer>
-    <BasicContainer>
-      <StatBox
-        text="NARGACUGA"
-        top-text="Most Hunted Monster"
-        image="https://static.wikia.nocookie.net/monsterhunter/images/4/46/MHRise-Nargacuga_Icon.png"
+      <BasicContainer width="24rem">
+        <BasicContainer width="25rem" :style="{ margin: 0 }">
+          <BasicButton @click="$router.push('/addData')">Add Data</BasicButton>
+        </BasicContainer>
+      </BasicContainer>
+      <BasicContainer clear height="18rem">
+        <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
+          <Grahp
+            v-if="faintsStats"
+            label="Carts over Time"
+            :data="faintsStats"
+          />
+        </BasicContainer>
+      </BasicContainer>
+      <BasicContainer>
+        <StatBox
+          :text="mostHuntedData.Monster"
+          top-text="Most Hunted Monster"
+          :image="`https://monsterhunter.fandom.com/wiki/Mizutsune?file=MHRise-Mizutsune_Icon.png`"
+        >
+          Hunted {{ mostHuntedData.Count }} times
+        </StatBox>
+      </BasicContainer>
+      <BasicContainer width="30rem" height="20rem">
+        <DoughnutChart
+          :data="[90, 5, 5]"
+          :labels="['Completed', 'Returned', 'Failed']"
+        />
+      </BasicContainer>
+      <BasicContainer
+        height="20rem"
+        width="80rem"
+        :style="{ display: 'block' }"
       >
-        Hunted 51 times
-      </StatBox>
-    </BasicContainer>
-    <BasicContainer width="30rem" height="20rem">
-      <DoughnutChart
-        :data="[90, 5, 5]"
-        :labels="['Completed', 'Returned', 'Failed']"
-      />
-    </BasicContainer>
-    <BasicContainer height="20rem" width="80rem" :style="{ display: 'block' }">
-      <RecentHunts />
-    </BasicContainer>
-  </div>
+        <RecentHunts />
+      </BasicContainer>
+    </div>
+  </Suspense>
 </template>
 
 <style scoped>

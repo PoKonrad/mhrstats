@@ -7,7 +7,7 @@ const props = defineProps(["text", "image", "topText"]);
     <p class="top-text">{{ props.topText }}</p>
     <div class="verticalAlign">
       <p class="middle-text">
-        {{ props.text }}
+        {{ text }}
       </p>
       <img :src="image" />
     </div>

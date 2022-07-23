@@ -3,9 +3,27 @@ import FormInput from "../components/FormInput.vue";
 import BasicContainer from "../components/BasicContainer.vue";
 import BasicButton from "../components/BasicButton.vue";
 import { ref } from "vue";
+import api from "../components/scripts/api";
 
 const login = ref("");
 const password = ref("");
+
+const loginPost = async () => {
+  try {
+    const resp = await api.post(
+      "/api/auth/login",
+      {
+        username: login.value,
+        password: password.value,
+      },
+      false
+    );
+    api.token = resp.token;
+    api.refreshToken = resp.refreshToken;
+  } catch (err) {
+    // one day
+  }
+};
 
 const test = () => {
   console.log(login.value);
@@ -29,7 +47,7 @@ const test = () => {
         <p>Sign in</p>
         <FormInput v-model="login" input-type="text">Username</FormInput>
         <FormInput v-model="password" input-type="password">Password</FormInput>
-        <BasicButton @click="test">Log in</BasicButton>
+        <BasicButton @click="loginPost">Log in</BasicButton>
       </BasicContainer>
     </BasicContainer>
   </div>

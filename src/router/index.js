@@ -28,4 +28,22 @@ const router = createRouter({
   ],
 });
 
+// router.beforeEach((to, from, next) => {
+//   if (!sessionStorage.getItem("token")) {
+//     next("/login");
+//   } else {
+//     next();
+//   }
+// });
+
+router.beforeEach(async (to) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+
+  if (authRequired && !sessionStorage.getItem("token")) {
+    return "/login";
+  }
+});
+
 export default router;
