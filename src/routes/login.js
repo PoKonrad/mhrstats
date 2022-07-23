@@ -1,4 +1,4 @@
-import { Router, json } from 'express'
+import { Router } from 'express'
 import login from '../controllers/login.js'
 import register from '../controllers/register.js'
 import refreshToken from '../controllers/refreshToken.js'

@@ -4,9 +4,9 @@ import generateToken from '../scripts/generateToken.js'
 
 const login = async (req, res) => {
     const postData = req.body;
-    const dbResp = await db("SELECT * FROM users WHERE username = ?", [postData.username, postData.password])
-
-    if (!dbResp[0]) {
+    const dbResp = await db("SELECT id, username, password FROM users WHERE username = ?", [postData.username, postData.password])
+    console.log(postData.username)
+    if (dbResp.length === 0) {
         res.status(400).json("No such user")
         return
     }

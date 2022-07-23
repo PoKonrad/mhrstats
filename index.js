@@ -3,12 +3,14 @@ import express, { json } from "express"
 import login from './src/routes/login.js'
 import auth from './src/middleware/auth.js'
 import data from './src/routes/data.js'
+import cors from 'cors'
 
 dotenv.config()
 const app = express()
 app.use(json({ 
     limit: '1MB'
 }));
+app.use(cors());
 app.use('/auth', login)
 app.use('/data', data)
 

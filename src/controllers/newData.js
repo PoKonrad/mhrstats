@@ -6,13 +6,14 @@ const newData = async (req, res) => {
     const players = data.getPlayers()
     const monsters = data.getAllMonsters()
     const questSuccess = data.getQuestSuccess()
+    const huntDate = req.body.DATE
 
-    const insertHunt = async (success) => {
-        return await dbQuery('INSERT INTO hunts (success) VALUES (?) RETURNING id;', [success])
+    const insertHunt = async (success, date) => {
+        return await dbQuery('INSERT INTO hunts (success, hunt_date) VALUES (?, DATE(?)) RETURNING id;', [success, date])
     }
 
     const insertLog = async (monsters, players) => {
-        const huntID = await insertHunt(questSuccess ? 1 : 0)
+        const huntID = await insertHunt(questSuccess ? 1 : 0, huntDate)
 
         players.forEach(async (el) => {
             const currentPlayerId = el.id
