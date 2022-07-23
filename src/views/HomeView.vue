@@ -6,11 +6,11 @@ import DoughnutChart from "../components/DoughnutChart.vue";
 import RecentHunts from "../components/RecentHunts.vue";
 import BasicButton from "../components/BasicButton.vue";
 import api from "../components/scripts/api";
-import { onMounted, ref, watch, watchEffect } from "vue";
+import { onMounted, ref } from "vue";
 import { computed } from "vue";
 
-const mostHuntedData = ref("a");
-const faintsStats = ref([]);
+const mostHuntedData = ref("");
+const faintJson = ref();
 
 const mostHunted = async () => {
   return await api.get("/api/data/stats?type=mostHunted");
@@ -22,16 +22,18 @@ const getFaintStats = async () => {
 
 onMounted(async () => {
   const mostHuntedResp = await mostHunted();
-  const getFaintsStatsResp = await getFaintStats();
+  faintJson.value = await getFaintStats();
   mostHuntedData.value = mostHuntedResp.data[0];
-  console.log(getFaintsStatsResp.data);
+});
 
-  const faintsStatsTemp = {};
-  getFaintsStatsResp.data.forEach((el) => {
-    faintsStatsTemp[el.hunt_date.slice(0, 10)] = parseInt(el.carts);
-  });
-  faintsStats.value = faintsStatsTemp;
-  console.log(faintsStatsTemp);
+const faintsStats = computed(() => {
+  if (!faintJson.value) {
+    return null;
+  }
+  return faintJson.value.data.map((x) => ({
+    x: x.hunt_date.slice(0, 10),
+    y: x.carts,
+  }));
 });
 </script>
 
@@ -59,7 +61,7 @@ onMounted(async () => {
       </BasicContainer>
       <BasicContainer clear height="18rem">
         <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
-          <Grahp
+          <GrahpCard
             v-if="faintsStats"
             label="Carts over Time"
             :data="faintsStats"
