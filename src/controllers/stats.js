@@ -30,7 +30,7 @@ const monsters = async (req, res) => {
             break;
         case 'faintsOverTime':
             resp = removeBigInt(await dbQuery(
-                `SELECT sum(hp.carts), p.name, h.hunt_date FROM players AS p
+                `SELECT sum(hp.carts) AS "carts", p.name, h.hunt_date FROM players AS p
                 INNER JOIN hunts_players AS hp ON p.id = hp.player
                 INNER JOIN hunts AS h ON hp.hunt_id = h.id
                 WHERE p.name = ?
