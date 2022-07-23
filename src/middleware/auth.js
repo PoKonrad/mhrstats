@@ -7,7 +7,7 @@ const auth = (req, res, next) => {
             if (err) {
                 return res.status(401).json({"error": true, "message": 'Unauthorized access.' });
             }
-            req.decoded = decoded;
+            res.locals.user = decoded;
             next()
         })
     }
