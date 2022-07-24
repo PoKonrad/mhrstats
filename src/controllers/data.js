@@ -2,7 +2,7 @@ import express from 'express';
 import dbQuery from "../configs/database.js";
 import damageMeterParser from '../scripts/damageMeterParser.js'
 import authMiddleware from '../middleware/auth.js'
-const router = express.Router();
+const router = express.Router()
 
 const removeBigInt = (obj) => {
     return JSON.parse(JSON.stringify(obj, (key, value) =>
@@ -12,7 +12,7 @@ const removeBigInt = (obj) => {
     ));
 }
 
-router.use(authMiddleware)
+//router.use(authMiddleware)
 
 router.get('/mostHunted', async (req, res) => {
 
@@ -29,7 +29,7 @@ router.get('/questCount', async (req, res) => {
     res.status(200).json({ data: resp });
 })
 
-router.get('/carts/:name', async (req, res) => {
+router.get('/carts/:name?', async (req, res) => {
 
     const params = req.params
 
@@ -38,7 +38,7 @@ router.get('/carts/:name', async (req, res) => {
     if (params.name) {
         resp = await dbQuery('SELECT SUM(carts) AS "Carts", players.name FROM hunts_players INNER JOIN players ON players.id = hunts_players.player WHERE players.name = ?', [params.name])
     } else {
-        resp = await dbQuery('SELECT SUM(carts) AS "Carts", players.name FROM hunts_players INNER JOIN players ON players.id = hunts_players.player GROUP BY players.name')
+        resp = await dbQuery('SELECT SUM(carts) AS "Carts" FROM hunts_players')
     }
 
     res.status(200).json({ data: resp })
@@ -70,9 +70,36 @@ router.get('/cartsOverTime/:name', async (req, res) => {
 })
 
 router.get('/highestDamageDone', async (req, res) => {
-    const resp = removeBigInt(await dbQuery('SELECT players.name, MAX(hunts_players.damage) FROM players JOIN hunts_players ON players.id = hunts_players.player'))
+    const resp = removeBigInt(await dbQuery('SELECT players.name, MAX(hunts_players.damage) AS "damage" FROM players JOIN hunts_players ON players.id = hunts_players.player'))
 
     res.status(200).json({ data: resp })
+})
+
+router.get('/lastQuests', async (req, res) => {
+    const idResp = removeBigInt(await dbQuery(`
+    SELECT h.id, h.success FROM hunts AS h
+    ORDER BY h.hunt_date DESC
+    LIMIT 5`))
+    console.log(idResp)
+
+    const resp = await Promise.all(idResp.map(async (el) => {
+        const mosntersResp = await dbQuery(`
+        SELECT hm.monster FROM hunts AS h
+        INNER JOIN hunts_monsters AS hm ON h.id = hm.hunt_id
+        WHERE h.id = ? AND hm.quest_target = 1`, [el.id])
+
+        const playersResp = await dbQuery(`
+        SELECT SUM(hp.carts) AS carts, SUM(hp.damage) AS damage FROM hunts AS h
+        INNER JOIN hunts_players AS hp ON h.id = hp.hunt_id
+        WHERE h.id = ?`, [el.id])
+        return {
+            success: el.success,
+            monsters: mosntersResp.map(monster => monster.monster),
+            carts: playersResp[0].carts,
+            damage: playersResp[0].damage
+        }
+    }))
+        res.status(200).json({ data: resp })
 })
 
 router.post('/addData', async (req, res) => {

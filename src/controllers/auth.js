@@ -18,7 +18,9 @@ router.post('/login', async (req, res) => {
         console.log('Success!')
         res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].id))
     } else {
-        res.status(400).json("Wrong login stuff")
+        res.status(400).json({
+            err: 'wrongLogin'
+        })
     }
 })
 
@@ -45,6 +47,12 @@ router.post('/refreshToken', async (req, res) => {
     }
 
     res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].user_id))
+})
+
+router.post('/logOff', async (req, res) => {
+    const userData = req.body
+    await dbQuery('DELETE FROM refresh WHERE token = ?', [userData.refreshToken])
+    res.status(200).json("Logged out")
 })
 
 
