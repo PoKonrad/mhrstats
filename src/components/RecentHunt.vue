@@ -1,27 +1,37 @@
-<script setup></script>
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps(["monsters", "success", "carts", "damage"]);
+
+const monsterImage = computed(() => {
+  if (!props.monsters) {
+    return null;
+  }
+  return props.monsters.map((el) => {
+    return new URL(`../assets/monsters/${el}.png`, import.meta.url).href;
+  });
+});
+</script>
 
 <template>
   <tr>
     <td>
       <div class="monster">
         <img
-          src="https://static.wikia.nocookie.net/monsterhunter/images/4/46/MHRise-Nargacuga_Icon.png"
-        />
-        <img
-          src="https://static.wikia.nocookie.net/monsterhunter/images/4/46/MHRise-Nargacuga_Icon.png"
-        />
-        <img
-          src="https://static.wikia.nocookie.net/monsterhunter/images/4/46/MHRise-Nargacuga_Icon.png"
-        />
-        <img
-          src="https://static.wikia.nocookie.net/monsterhunter/images/4/46/MHRise-Nargacuga_Icon.png"
+          v-for="(monster, index) in monsterImage"
+          :key="index"
+          :src="monster"
         />
       </div>
     </td>
-    <td>NARGACUGA</td>
-    <td>Success</td>
-    <td>Carts</td>
-    <td>69</td>
+    <td>
+      <span v-for="(item, index) in monsters" :key="index">{{ item }}</span>
+    </td>
+    <td :class="props.success ? 'success' : 'failed'">
+      {{ success ? "Success" : "Failed" }}
+    </td>
+    <td>{{ carts }}</td>
+    <td>{{ damage }}</td>
   </tr>
 </template>
 
@@ -38,7 +48,18 @@ img {
   margin-inline: 1rem;
 }
 
+.success {
+  color: #1de4bd;
+}
+
+.failed {
+  color: #ef7e32;
+}
 .recent-hunt-stat-container {
   font-size: 2rem;
+}
+
+span {
+  margin: 0.2rem;
 }
 </style>

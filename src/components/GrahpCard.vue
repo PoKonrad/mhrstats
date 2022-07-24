@@ -9,7 +9,7 @@ const props = defineProps(["label", "label2", "data", "data2", "text"]);
 
 const canvas = ref(null);
 
-const data = computed(() => {
+const chartData = computed(() => {
   return {
     datasets: [
       {
@@ -26,7 +26,7 @@ const data = computed(() => {
         fill: true,
         borderColor: "#6c7ae0",
         tension: 0.2,
-        yAxisID: "y2",
+        yAxisID: "y",
       },
     ],
   };
@@ -35,7 +35,7 @@ const data = computed(() => {
 const config = computed(() => {
   return {
     type: "line",
-    data: data.value,
+    data: chartData.value,
     options: {
       responsive: true,
       interaction: {
@@ -73,7 +73,6 @@ onMounted(() => {
   fitToContainer(canvas.value);
   const ctx = canvas.value.getContext("2d");
   new Chart(ctx, config.value);
-  console.log(config.value);
 });
 </script>
 

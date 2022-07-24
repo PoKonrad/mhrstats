@@ -61,6 +61,15 @@ class api {
     this.refreshToken = resp.refreshToken;
     this.token = resp.token;
   }
+
+  async logOut() {
+    this.post("/api/auth/logOff", {
+      refreshToken: this.refreshToken,
+      token: this.token,
+    });
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("refrteshToken");
+  }
 }
 
 const newApi = new api();

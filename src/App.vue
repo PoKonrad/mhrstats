@@ -1,6 +1,4 @@
 <script setup>
-import SidePanel from "./components/SidePanel.vue";
-import HomeView from "./views/HomeView.vue";
 </script>
 
 <template>

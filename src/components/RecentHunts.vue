@@ -1,5 +1,7 @@
 <script setup>
 import RecentHunt from "./RecentHunt.vue";
+
+const props = defineProps(["recentData"]);
 </script>
 
 <template>
@@ -15,11 +17,14 @@ import RecentHunt from "./RecentHunt.vue";
         </tr>
       </thead>
       <tbody>
-        <RecentHunt />
-        <RecentHunt />
-        <RecentHunt />
-        <RecentHunt />
-        <RecentHunt />
+        <RecentHunt
+          v-for="(item, index) in recentData"
+          :key="index"
+          :damage="item.damage"
+          :monsters="item.monsters"
+          :success="item.success"
+          :carts="item.carts"
+        />
       </tbody>
     </table>
   </div>
