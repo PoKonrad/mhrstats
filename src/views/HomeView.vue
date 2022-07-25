@@ -142,25 +142,23 @@ const logOut = async () => {
       </Transition>
     </BasicContainer>
     <BasicContainer width="24rem">
-      <BasicContainer width="25rem" :style="{ margin: 0 }">
+      <BasicContainer width="25rem" class="add-data-button-container">
         <BasicButton @click="$router.push('/addData')">Add Data</BasicButton>
       </BasicContainer>
     </BasicContainer>
-    <BasicContainer clear height="18rem">
-      <BasicContainer margin="0" height="100%" :style="{ margin: '0.4rem' }">
-        <Transition>
-          <GrahpCard
-            text="Carts over time"
-            v-if="faintsStatsPlayer1 && faintsStatsPlayer2"
-            label="Player1"
-            label2="Player2"
-            :data="faintsStatsPlayer1"
-            :data2="faintsStatsPlayer2"
-          />
-        </Transition>
-      </BasicContainer>
+    <BasicContainer class="graph-card-container">
+      <Transition>
+        <GrahpCard
+          text="Carts over time"
+          v-if="faintsStatsPlayer1 && faintsStatsPlayer2"
+          label="Player1"
+          label2="Player2"
+          :data="faintsStatsPlayer1"
+          :data2="faintsStatsPlayer2"
+        />
+      </Transition>
     </BasicContainer>
-    <BasicContainer width="56rem" :style="{ marginRight: '1rem' }">
+    <BasicContainer class="most-hunted-container">
       <Transition>
         <Transition>
           <StatBox
@@ -174,7 +172,7 @@ const logOut = async () => {
         </Transition>
       </Transition>
     </BasicContainer>
-    <BasicContainer width="30rem" height="20rem">
+    <BasicContainer class="doughnut-chart-container">
       <Transition>
         <DoughnutChart
           v-if="questStats"
@@ -183,7 +181,7 @@ const logOut = async () => {
         />
       </Transition>
     </BasicContainer>
-    <BasicContainer height="20rem" width="80rem" :style="{ display: 'block' }">
+    <BasicContainer class="recent-hunts-container">
       <Transition>
         <RecentHunts v-if="lastQuestsJson" :recentData="lastQuestsJson" />
       </Transition>
@@ -209,5 +207,30 @@ const logOut = async () => {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+.add-data-button-container {
+  margin: 0;
+}
+
+.graph-card-container {
+  margin: 0.4rem;
+  height: 100%;
+}
+
+.most-hunted-container {
+  width: 56rem;
+  margin-right: 1rem;
+}
+
+.recent-hunts-container {
+  height: 20rem;
+  width: 80rem;
+  display: block;
+}
+
+.doughnut-chart-container {
+  width: 30rem;
+  height: 20rem;
 }
 </style>

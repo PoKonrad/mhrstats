@@ -1,14 +1,5 @@
 <script setup>
 const props = defineProps({
-  width: {
-    default: "50rem",
-  },
-  height: {
-    default: "10rem",
-  },
-  margin: {
-    default: "1rem",
-  },
   clear: {
     default: false,
     type: Boolean,
@@ -36,7 +27,7 @@ const props = defineProps({
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: v-bind(margin);
+  margin: 1rem;
 }
 
 .clear {
