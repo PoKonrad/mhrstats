@@ -5,8 +5,7 @@ import BasicButton from "../components/BasicButton.vue";
 import { reactive, ref } from "vue";
 import api from "../components/scripts/api";
 import router from "../router/index";
-import Loading from "../components/Loading.vue";
-import { computed } from "vue";
+import LoadingCircle from "../components/LoadingCircle.vue";
 
 const login = ref("");
 const password = ref("");
@@ -53,7 +52,7 @@ const loginPost = async () => {
         <FormInput v-model="login" input-type="text">Username</FormInput>
         <FormInput v-model="password" input-type="password">Password</FormInput>
         <BasicButton @click="loginPost">Log in</BasicButton>
-        <Loading :class="{ loading: !formStatus.loading }" />
+        <LoadingCircle :class="{ loading: !formStatus.loading }" />
         <Transition>
           <div
             v-if="formStatus.error || formStatus.loading"

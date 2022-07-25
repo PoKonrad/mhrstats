@@ -1,7 +1,5 @@
 <script setup>
 import RecentHunt from "./RecentHunt.vue";
-
-const props = defineProps(["recentData"]);
 </script>
 
 <template>

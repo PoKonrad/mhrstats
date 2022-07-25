@@ -1,12 +1,8 @@
 <script setup>
-import FormInput from "../components/FormInput.vue";
 import BasicContainer from "../components/BasicContainer.vue";
 import BasicButton from "../components/BasicButton.vue";
-import { ref } from "vue";
 import DragnDrop from "../components/DragnDrop.vue";
 import api from "../components/scripts/api";
-
-const files = ref("");
 
 const readFileAsync = (file) => {
   return new Promise((resolve, reject) => {
