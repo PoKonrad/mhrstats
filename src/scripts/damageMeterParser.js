@@ -7,7 +7,7 @@ class parseDamageMeterData {
         return this.file.MONSTERS.map(el => {
             return {
                 name: el.name,
-                isQuestTarget: el.isQuestTarget,
+                isQuestTarget: el.isQuestTarget ==! undefined ? el.isQuestTarget : true, // Might be non existent in older version of the dmg meter
                 isHunted: el.hp.current ? false : true,
                 damageData: el.damageSources ? this.getDamageData(el) : {}
             }

@@ -58,11 +58,11 @@ router.get('/cartsOverTime/:name', async (req, res) => {
 
 
     const resp = removeBigInt(await dbQuery(
-        `SELECT sum(hp.carts) AS "carts", p.name, h.hunt_date FROM players AS p
+        `SELECT sum(hp.carts) AS "carts", p.name, DATE(FROM_UNIXTIME(h.hunt_date)) AS hd FROM players AS p
         INNER JOIN hunts_players AS hp ON p.id = hp.player
         INNER JOIN hunts AS h ON hp.hunt_id = h.id
         WHERE p.name = ?
-        GROUP BY h.hunt_date`, [params.name]
+        GROUP BY hd`, [params.name]
     ))
 
     console.log(resp)
@@ -107,10 +107,10 @@ router.post('/addData', async (req, res) => {
     const players = data.getPlayers()
     const monsters = data.getAllMonsters()
     const questSuccess = data.getQuestSuccess()
-    const huntDate = req.body.DATE
+    const huntDate = parseInt(req.body.date / 1000)
 
     const insertHunt = async (success, date) => {
-        return await dbQuery('INSERT INTO hunts (success, hunt_date) VALUES (?, DATE(?)) RETURNING id;', [success, date])
+        return await dbQuery('INSERT INTO hunts (success, hunt_date) VALUES (?, ?) RETURNING id;', [success, date])
     }
 
     const insertLog = async (monsters, players) => {
