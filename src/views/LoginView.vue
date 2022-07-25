@@ -6,7 +6,7 @@ import { reactive, ref } from "vue";
 import api from "../components/scripts/api";
 import router from "../router/index";
 import Loading from "../components/Loading.vue";
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 
 const login = ref("");
 const password = ref("");

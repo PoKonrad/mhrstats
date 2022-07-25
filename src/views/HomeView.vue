@@ -84,7 +84,7 @@ const mapOverCartsOverTime = (json) => {
     return null;
   }
   return json.data.map((x) => ({
-    x: x.hunt_date.slice(0, 10),
+    x: x.hd.slice(0, 10),
     y: x.carts,
   }));
 };
@@ -160,7 +160,7 @@ const logOut = async () => {
         </Transition>
       </BasicContainer>
     </BasicContainer>
-    <BasicContainer>
+    <BasicContainer width="56rem" :style="{ marginRight: '1rem' }">
       <Transition>
         <Transition>
           <StatBox
@@ -194,10 +194,11 @@ const logOut = async () => {
 <style scoped>
 .main-box {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .v-enter-active,

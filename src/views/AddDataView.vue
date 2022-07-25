@@ -4,13 +4,36 @@ import BasicContainer from "../components/BasicContainer.vue";
 import BasicButton from "../components/BasicButton.vue";
 import { ref } from "vue";
 import DragnDrop from "../components/DragnDrop.vue";
+import api from "../components/scripts/api";
 
-const login = ref("");
-const password = ref("");
+const files = ref("");
 
-const test = () => {
-  console.log(login.value);
-  console.log(password.value);
+const readFileAsync = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+  });
+};
+
+const handleFileDrop = async (e) => {
+  console.log(e);
+  e.forEach(async (file) => {
+    if (file.type !== "application/json") {
+      return;
+    }
+    const fileContents = await readFileAsync(file);
+    const fileJson = JSON.parse(fileContents);
+    fileJson.date = file.lastModified;
+
+    await api.post("api/data/addData", fileJson);
+  });
 };
 </script>
 <template>
@@ -25,7 +48,7 @@ const test = () => {
           justifyContent: 'center',
         }"
       >
-        <DragnDrop>
+        <DragnDrop @files-dropped="handleFileDrop">
           <BasicContainer width="40rem">
             Drag file here to upload
           </BasicContainer>
