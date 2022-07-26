@@ -9,7 +9,8 @@ const dbQuery = async (query, placeholders) => {
             password: process.env.MARIADB_PASSWORD,
             database: process.env.MARIADB_DB,
             checkDuplicate: false,
-            multipleStatements: true
+            multipleStatements: true,
+            connectTimeout: 10000
         });
 
         const resp = await db.query(query, placeholders);
