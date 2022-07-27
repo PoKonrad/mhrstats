@@ -12,7 +12,7 @@ const removeBigInt = (obj) => {
     ));
 }
 
-//router.use(authMiddleware)
+router.use(authMiddleware)
 
 router.get('/mostHunted', async (req, res) => {
 
@@ -27,6 +27,12 @@ router.get('/questCount', async (req, res) => {
     const resp = removeBigInt(await dbQuery('SELECT COUNT(*) AS "Count", success FROM hunts GROUP BY success'))
 
     res.status(200).json({ data: resp });
+})
+
+router.get('/players', async (req, res) => {
+    const resp = await dbQuery('SELECT name FROM players')
+
+    res.status(200).json({data: resp})
 })
 
 router.get('/carts/:name?', async (req, res) => {
@@ -79,7 +85,7 @@ router.get('/lastQuests', async (req, res) => {
     const idResp = removeBigInt(await dbQuery(`
     SELECT h.id, h.success FROM hunts AS h
     ORDER BY h.hunt_date DESC
-    LIMIT 5`))
+    LIMIT 4`))
     console.log(idResp)
 
     const resp = await Promise.all(idResp.map(async (el) => {
@@ -103,6 +109,12 @@ router.get('/lastQuests', async (req, res) => {
 })
 
 router.post('/addData', async (req, res) => {
+
+    if(!res.locals.user.insertPerm) {
+        res.status(403).json("No permissions to upload.")
+        return
+    }
+
     const data = new damageMeterParser(req.body)
     const players = data.getPlayers()
     const monsters = data.getAllMonsters()

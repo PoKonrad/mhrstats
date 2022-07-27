@@ -7,7 +7,7 @@ const router = new Router;
 
 router.post('/login', async (req, res) => {
     const postData = req.body;
-    const dbResp = await dbQuery("SELECT id, username, password FROM users WHERE username = ?", [postData.username, postData.password])
+    const dbResp = await dbQuery("SELECT id, username, password, insertPerm FROM users WHERE username = ?", [postData.username, postData.password])
     console.log(postData.username)
     if (dbResp.length === 0) {
         res.status(400).json("No such user")
@@ -16,7 +16,7 @@ router.post('/login', async (req, res) => {
 
     if (await argon2.verify(dbResp[0].password, postData.password)) {
         console.log('Success!')
-        res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].id))
+        res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].id, dbResp[0].insertPerm))
     } else {
         res.status(400).json({
             err: 'wrongLogin'
@@ -39,14 +39,14 @@ router.post('/register', async (req, res) => {
 router.post('/refreshToken', async (req, res) => {
     const refToken = req.body.refreshToken
 
-    const dbResp = await dbQuery('SELECT refresh.token, refresh.expiration, refresh.user_id, users.username FROM refresh INNER JOIN users ON users.id = refresh.user_id WHERE refresh.token = ?', [refToken])
+    const dbResp = await dbQuery('SELECT refresh.token, refresh.expiration, refresh.user_id, users.username, users.insertPerm FROM refresh INNER JOIN users ON users.id = refresh.user_id WHERE refresh.token = ?', [refToken])
     console.log(dbResp[0])
     if(new Date(dbResp[0].expiration) < new Date()) {
         res.status(400).json("Token Expired")
         return
     }
 
-    res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].user_id))
+    res.status(200).json(await generateToken(dbResp[0].username, dbResp[0].user_id, dbResp[0].insertPerm))
 })
 
 router.post('/logOff', async (req, res) => {

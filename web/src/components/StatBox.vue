@@ -24,7 +24,7 @@ const props = defineProps(["text", "image", "topText"]);
 }
 .middle-text {
   font-size: 3.8rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 .stat-box-container {
   display: flex;

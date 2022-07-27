@@ -20,8 +20,16 @@ const cartJson = reactive({
   player2: "",
 });
 
+const playerNames = reactive({
+  player1: "",
+  player2: "",
+});
+
 const getLastQuests = async () => {
   return await api.get("/api/data/lastQuests");
+};
+const getPlayers = async () => {
+  return await api.get("/api/data/players");
 };
 
 const getNumberOfCarts = async () => {
@@ -47,9 +55,11 @@ const getFaintStats = async (player) => {
 onMounted(async () => {
   const mostHuntedResp = await mostHunted();
   mostHuntedData.value = mostHuntedResp.data[0];
-
-  cartJson.player1 = await getFaintStats("Rad");
-  cartJson.player2 = await getFaintStats("RedPanda");
+  const players = await getPlayers();
+  playerNames.player1 = players.data[0].name;
+  playerNames.player2 = players.data[1].name;
+  cartJson.player1 = await getFaintStats(playerNames.player1);
+  cartJson.player2 = await getFaintStats(playerNames.player2);
 
   const questStatResp = await getQuestStats();
   questStatsJson.value = questStatResp.data;
@@ -70,12 +80,12 @@ const questStats = computed(() => {
   }
   return questStatsJson.value[0]?.success
     ? [
-        parseInt(questStatsJson.value[0].Count),
-        parseInt(questStatsJson.value[1].Count),
+        parseInt(questStatsJson.value[0]?.Count),
+        parseInt(questStatsJson.value[1]?.Count),
       ]
     : [
-        parseInt(questStatsJson.value[1].Count),
-        parseInt(questStatsJson.value[0].Count),
+        parseInt(questStatsJson.value[1]?.Count),
+        parseInt(questStatsJson.value[0]?.Count),
       ];
 });
 
@@ -119,7 +129,10 @@ const logOut = async () => {
         <BasicButton @buttonClick="logOut">Log Out</BasicButton>
       </StatBox>
       <Transition>
-        <StatBox v-if="questStats" :text="questStats[0] + questStats[1]">
+        <StatBox
+          v-if="questStats"
+          :text="questStats[0] || 0 + questStats[1] || 0"
+        >
           Number of Quests
         </StatBox>
       </Transition>
@@ -129,7 +142,7 @@ const logOut = async () => {
         </StatBox>
       </Transition>
     </BasicContainer>
-    <BasicContainer width="24rem">
+    <BasicContainer class="short-container">
       <Transition>
         <StatBox
           v-if="mostDamageJson"
@@ -141,8 +154,8 @@ const logOut = async () => {
         </StatBox>
       </Transition>
     </BasicContainer>
-    <BasicContainer width="24rem">
-      <BasicContainer width="25rem" class="add-data-button-container">
+    <BasicContainer class="short-container">
+      <BasicContainer class="add-data-button-container short-container">
         <BasicButton @click="$router.push('/addData')">Add Data</BasicButton>
       </BasicContainer>
     </BasicContainer>
@@ -151,8 +164,8 @@ const logOut = async () => {
         <GrahpCard
           text="Carts over time"
           v-if="faintsStatsPlayer1 && faintsStatsPlayer2"
-          label="Player1"
-          label2="Player2"
+          :label="playerNames.player1"
+          :label2="playerNames.player2"
           :data="faintsStatsPlayer1"
           :data2="faintsStatsPlayer2"
         />
@@ -232,5 +245,9 @@ const logOut = async () => {
 .doughnut-chart-container {
   width: 30rem;
   height: 20rem;
+}
+
+.short-container {
+  width: 24rem;
 }
 </style>

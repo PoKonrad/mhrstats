@@ -20,18 +20,26 @@ const onDrop = (e) => {
 
 <template>
   <div
+    :class="{
+      active: active,
+    }"
     :data-active="active"
     @dragenter.prevent="setActive"
     @dragover.prevent="setActive"
     @dragleave.prevent="setInactive"
     @drop.prevent="onDrop"
   >
-    <p><slot></slot></p>
+    <slot></slot>
   </div>
 </template>
 
 <style scoped lang="scss">
-p {
+div {
   font-size: 2rem;
+}
+
+.active {
+  background-color: lavender;
+  transition: background-color 0.4s ease;
 }
 </style>

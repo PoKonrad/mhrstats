@@ -34,7 +34,7 @@ const loginPost = async () => {
     }
     api.token = resp.token;
     api.refreshToken = resp.refreshToken;
-    router.replace("/");
+    router.push("/");
   } catch (err) {
     formStatus.loading = false;
     formStatus.error = true;
@@ -46,9 +46,14 @@ const loginPost = async () => {
 </script>
 <template>
   <div class="login-container">
-    <BasicContainer width="50rem" height="50rem">
+    <BasicContainer class="login-container-wide">
       <form @submit.prevent>
         <p>Sign in</p>
+        <div class="demo">
+          <div>Demo User:</div>
+          <div>Username: <strong>demo</strong></div>
+          <div>Password: <strong>demo</strong></div>
+        </div>
         <FormInput v-model="login" input-type="text">Username</FormInput>
         <FormInput v-model="password" input-type="password">Password</FormInput>
         <BasicButton @click="loginPost">Log in</BasicButton>
@@ -67,7 +72,7 @@ const loginPost = async () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .login-container {
   width: 100%;
   height: 100%;
@@ -88,6 +93,11 @@ form {
   align-items: center;
   height: 50rem;
   width: 30rem;
+}
+
+.login-container-wide {
+  width: 50rem;
+  height: 50rem;
 }
 
 .error {
@@ -113,5 +123,13 @@ form {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+.demo {
+  font-size: 1.2rem;
+
+  & strong {
+    font-weight: 900;
+  }
 }
 </style>

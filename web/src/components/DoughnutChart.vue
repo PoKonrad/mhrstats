@@ -54,7 +54,6 @@ onMounted(() => {
   fitToContainer(canvas.value);
   const ctx = canvas.value.getContext("2d");
   new Chart(ctx, chartConfig.value);
-  console.log(chartConfig.value);
 });
 </script>
 

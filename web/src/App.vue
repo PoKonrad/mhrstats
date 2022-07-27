@@ -8,8 +8,7 @@
   </div>
 </template>
 
-<style>
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+<style lang="scss">
 @import "@/assets/base.css";
 body {
   font-family: "Roboto", sans-serif;
